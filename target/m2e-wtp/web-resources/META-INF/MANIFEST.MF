@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Implementation-Title: lifeSuccessGroup
-Implementation-Version: 0.0.1
+Implementation-Version: 0.0.2
 Built-By: archi
 Implementation-Vendor-Id: com.c3.lsg
 Build-Jdk: 1.8.0_181

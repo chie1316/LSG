@@ -15,7 +15,7 @@ public class NewGuestRequest {
 
 	private String lastName;
 
-	private int age;
+	private Integer age;
 
 	private String address;
 
@@ -49,11 +49,11 @@ public class NewGuestRequest {
 		this.lastName = lastName;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
