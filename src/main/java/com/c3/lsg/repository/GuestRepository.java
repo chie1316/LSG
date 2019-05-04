@@ -29,4 +29,5 @@ public interface GuestRepository extends JpaRepository<Guest, String> {
 	 * @return
 	 */
 	public List<Guest> findByDelFalse();
+	
 }

@@ -9,6 +9,7 @@ import com.c3.lsg.dto.GuestResponseDtl;
 import com.c3.lsg.dto.NewGuestRequest;
 import com.c3.lsg.dto.ResponseListObject;
 import com.c3.lsg.dto.ResponseObject;
+import com.c3.lsg.dto.UpdateGuestRequest;
 import com.c3.lsg.exeception.CustomException;
 
 /**
@@ -22,7 +23,22 @@ public interface GuestService {
 	public ResponseObject addGuest(NewGuestRequest request) throws CustomException;
 
 	/*
-	 * This service will allow the user to view all guests.
+	 * This service will allow the user to update the guest details.
+	 */
+	public ResponseObject updateGuest(UpdateGuestRequest request) throws CustomException;
+
+	/*
+	 * This service will allow the user to view guest list.
 	 */
 	public ResponseListObject<List<GuestResponseDtl>> getGuestLists() throws CustomException;
+
+	/*
+	 * This service will allow the user to view guest details.
+	 */
+	public ResponseListObject<GuestResponseDtl> getGuestById(String id) throws CustomException;
+
+	/*
+	 * This service will allow the user to remove the guest in the list.
+	 */
+	public ResponseObject removeGuest(String id) throws CustomException;
 }

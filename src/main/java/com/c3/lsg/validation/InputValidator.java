@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import com.c3.lsg.dto.NewGuestRequest;
 import com.c3.lsg.dto.NewMemberRequest;
+import com.c3.lsg.dto.UpdateGuestRequest;
 import com.c3.lsg.exeception.CustomException;
 
 /**
@@ -92,6 +93,47 @@ public class InputValidator {
 		}
 	}
 
+	/**
+	 * This method will validate Incoming requests from updateGuest Controller.
+	 * 
+	 * @throws CustomException
+	 */
+	public void updateGuest(UpdateGuestRequest request) throws CustomException {
+		boolean hasError = false;
+		StringBuilder errorMessage = new StringBuilder();
+
+		if (isEmptyStr(request.getFirstName())) {
+			hasError = true;
+			errorMessage.append("First Name is required.");
+			errorMessage.append("\n");
+		}
+
+		if (isEmptyStr(request.getLastName())) {
+			hasError = true;
+			errorMessage.append("Last Name is required.");
+			errorMessage.append("\n");
+		}
+
+		if (isEmptyInt(request.getAge())) {
+			hasError = true;
+			errorMessage.append("Age is required.");
+			errorMessage.append("\n");
+		}
+
+		if (isEmptyStr(request.getAddress())) {
+			hasError = true;
+			errorMessage.append("Address is required.");
+			errorMessage.append("\n");
+		}
+
+		if (hasError) {
+			throw new CustomException( //
+					Integer.valueOf(env.getProperty(CODE_FAILED)), //
+					env.getProperty(TITLE_REQUIRED), //
+					errorMessage.toString());
+		}
+	}
+	
 	/**
 	 * This method will validate Incoming requests from addMember Controller.
 	 * 

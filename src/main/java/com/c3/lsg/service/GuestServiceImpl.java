@@ -5,8 +5,10 @@ package com.c3.lsg.service;
 
 import static com.c3.lsg.constants.ResponseConstant.CODE_FAILED;
 import static com.c3.lsg.constants.ResponseConstant.CODE_SUCCESS;
+import static com.c3.lsg.constants.ResponseConstant.MESSAGE_FAILED;
 import static com.c3.lsg.constants.ResponseConstant.MESSAGE_SUCCESS;
 import static com.c3.lsg.constants.ResponseConstant.TITLE_DATA_ACCESS_ERROR;
+import static com.c3.lsg.constants.ResponseConstant.TITLE_FAILED;
 import static com.c3.lsg.constants.ResponseConstant.TITLE_SUCCESS;
 
 import java.util.ArrayList;
@@ -21,11 +23,11 @@ import com.c3.lsg.dto.InvitedByResponseDtl;
 import com.c3.lsg.dto.NewGuestRequest;
 import com.c3.lsg.dto.ResponseListObject;
 import com.c3.lsg.dto.ResponseObject;
+import com.c3.lsg.dto.UpdateGuestRequest;
 import com.c3.lsg.exeception.CustomException;
 import com.c3.lsg.model.Guest;
 import com.c3.lsg.model.Member;
 import com.c3.lsg.repository.GuestRepository;
-import com.c3.lsg.util.CustomBuilder;
 
 /**
  * @author archie.ramirez
@@ -43,7 +45,7 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 	 * @param newGuest
 	 * @throws CustomException
 	 */
-	private void saveNewGuest(Guest newGuest) throws CustomException {
+	private void saveGuest(Guest newGuest) throws CustomException {
 		try {
 			guestRepo.save(newGuest);
 
@@ -73,6 +75,25 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 		return guestList;
 	}
 
+	/**
+	 * This method gets the Guest Details.
+	 * 
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws CustomException
+	 */
+	private Guest findGuestById(String id) throws CustomException {
+		Guest guest = null;
+		try {
+			guest = guestRepo.findByIdAndDelFalse(id);
+		} catch (DataAccessException e) {
+			throw new CustomException(Integer.valueOf(env.getProperty(CODE_FAILED)), //
+					env.getProperty(TITLE_DATA_ACCESS_ERROR), //
+					"Unable to retrieve Guest's Details.");
+		}
+		return guest;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -92,12 +113,12 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 		newGuest.setMobileNo(request.getMobileNo());
 		newGuest.setEmail(request.getEmail());
 
-		Member member = memberRepo.findByIdAndDelFalse(request.getInvitedBy());
+		Member member = memberRepo.findByIdAndDelFalse(request.getInvitedById());
 		if (member != null) {
 			newGuest.setInvitedBy(member);
 		}
 
-		saveNewGuest(newGuest);
+		saveGuest(newGuest);
 
 		return new ResponseObject( //
 				Integer.valueOf(env.getProperty(CODE_SUCCESS)), //
@@ -121,17 +142,14 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 			Member member = guestProjectionData.getInvitedBy();
 			InvitedByResponseDtl invitedBy = new InvitedByResponseDtl();
 			if (member != null) {
-				String memberFullName = CustomBuilder.buildName(member.getFirstName(), null, member.getLastName());
+				String memberFullName = member.getFirstName() + " " + member.getLastName();
 				invitedBy = new InvitedByResponseDtl(member.getId(), memberFullName);
 			}
 
-			String guestfullName = CustomBuilder.buildName(guestProjectionData.getFirstName(),
-					guestProjectionData.getMiddleName(), guestProjectionData.getLastName());
-
 			GuestResponseDtl guestResponseDtl = new GuestResponseDtl( //
 					guestProjectionData.getId(), //
-					guestfullName, //
-					guestProjectionData.getAge(), //
+					guestProjectionData.getFirstName(), guestProjectionData.getMiddleName(),
+					guestProjectionData.getLastName(), guestProjectionData.getAge(), //
 					guestProjectionData.getAddress(), //
 					guestProjectionData.getMobileNo(), //
 					guestProjectionData.getEmail(), //
@@ -147,4 +165,114 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 				guestResponseDtlList);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.c3.lsg.service.GuestService#getGuestById()
+	 */
+	@Override
+	public ResponseListObject<GuestResponseDtl> getGuestById(String id) throws CustomException {
+
+		GuestResponseDtl guestResponseDtl = null;
+		Guest guest = findGuestById(id);
+
+		if (guest != null) {
+			Member member = guest.getInvitedBy();
+			InvitedByResponseDtl invitedBy = new InvitedByResponseDtl();
+			if (member != null) {
+				String memberFullName = member.getFirstName() + " " + member.getLastName();
+				invitedBy = new InvitedByResponseDtl(member.getId(), memberFullName);
+			}
+
+			guestResponseDtl = new GuestResponseDtl( //
+					guest.getId(), //
+					guest.getFirstName(), //
+					guest.getMiddleName(), //
+					guest.getLastName(), //
+					guest.getAge(), //
+					guest.getAddress(), //
+					guest.getMobileNo(), //
+					guest.getEmail(), //
+					invitedBy);
+		}
+
+		return new ResponseListObject<>(//
+				Integer.valueOf(env.getProperty(CODE_SUCCESS)), //
+				env.getProperty(TITLE_SUCCESS), //
+				env.getProperty(MESSAGE_SUCCESS), //
+				guestResponseDtl);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.c3.lsg.service.GuestService#updateGuest(com.c3.lsg.dto.
+	 * UpdateGuestRequest)
+	 */
+	@Override
+	public ResponseObject updateGuest(UpdateGuestRequest request) throws CustomException {
+
+		ResponseObject response = null;
+		Guest guest = findGuestById(request.getId());
+
+		if (guest != null) {
+			guest.setFirstName(request.getFirstName());
+			guest.setMiddleName(request.getMiddleName());
+			guest.setLastName(request.getLastName());
+			guest.setAddress(request.getAddress());
+			guest.setAge(request.getAge());
+			guest.setMobileNo(request.getMobileNo());
+			guest.setEmail(request.getEmail());
+
+			Member member = memberRepo.findByIdAndDelFalse(request.getInvitedById());
+			if (member != null) {
+				guest.setInvitedBy(member);
+			}
+
+			saveGuest(guest);
+
+			response = new ResponseObject( //
+					Integer.valueOf(env.getProperty(CODE_SUCCESS)), //
+					env.getProperty(TITLE_SUCCESS), //
+					env.getProperty(MESSAGE_SUCCESS));
+		} else {
+
+			response = new ResponseObject( //
+					Integer.valueOf(env.getProperty(CODE_FAILED)), //
+					env.getProperty(TITLE_FAILED), //
+					env.getProperty(MESSAGE_FAILED));
+		}
+
+		return response;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.c3.lsg.service.GuestService#removeGuest(java.lang.String)
+	 */
+	@Override
+	public ResponseObject removeGuest(String id) throws CustomException {
+		ResponseObject response = null;
+
+		Guest guest = findGuestById(id);
+		if (guest != null) {
+			guest.setDel(true);
+
+			saveGuest(guest);
+			
+			response = new ResponseObject( //
+					Integer.valueOf(env.getProperty(CODE_SUCCESS)), //
+					env.getProperty(TITLE_SUCCESS), //
+					env.getProperty(MESSAGE_SUCCESS));
+		} else {
+
+			response = new ResponseObject( //
+					Integer.valueOf(env.getProperty(CODE_FAILED)), //
+					env.getProperty(TITLE_FAILED), //
+					env.getProperty(MESSAGE_FAILED));
+		}
+
+		return response;
+	}
 }

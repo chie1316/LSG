@@ -7,27 +7,28 @@ package com.c3.lsg.dto;
  * @author archie.ramirez
  *
  */
-public class GuestResponseDtl {
+public class UpdateGuestRequest {
 
 	/**
 	 * Default
 	 */
-	public GuestResponseDtl() {
+	public UpdateGuestRequest() {
 		super();
-		this.invitedBy = new InvitedByResponseDtl();
 	}
 
 	/**
 	 * @param id
-	 * @param name
+	 * @param firstName
+	 * @param middleName
+	 * @param lastName
 	 * @param age
 	 * @param address
 	 * @param mobileNo
 	 * @param email
-	 * @param invitedBy
+	 * @param invitedById
 	 */
-	public GuestResponseDtl(String id, String firstName, String middleName, String lastName, int age, String address, String mobileNo, String email,
-			InvitedByResponseDtl invitedBy) {
+	public UpdateGuestRequest(String id, String firstName, String middleName, String lastName, Integer age,
+			String address, String mobileNo, String email, String invitedById) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -37,18 +38,18 @@ public class GuestResponseDtl {
 		this.address = address;
 		this.mobileNo = mobileNo;
 		this.email = email;
-		this.invitedBy = invitedBy;
+		this.invitedById = invitedById;
 	}
 
 	private String id;
 
 	private String firstName;
-	
+
 	private String middleName;
-	
+
 	private String lastName;
 
-	private int age;
+	private Integer age;
 
 	private String address;
 
@@ -56,7 +57,7 @@ public class GuestResponseDtl {
 
 	private String email;
 
-	private InvitedByResponseDtl invitedBy;
+	private String invitedById;
 
 	public String getId() {
 		return id;
@@ -90,11 +91,11 @@ public class GuestResponseDtl {
 		this.lastName = lastName;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
@@ -122,12 +123,12 @@ public class GuestResponseDtl {
 		this.email = email;
 	}
 
-	public InvitedByResponseDtl getInvitedBy() {
-		return invitedBy;
+	public String getInvitedById() {
+		return invitedById;
 	}
 
-	public void setInvitedBy(InvitedByResponseDtl invitedBy) {
-		this.invitedBy = invitedBy;
+	public void setInvitedById(String invitedById) {
+		this.invitedById = invitedById;
 	}
 
 }

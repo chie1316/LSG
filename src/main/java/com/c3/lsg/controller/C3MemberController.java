@@ -4,11 +4,8 @@
 package com.c3.lsg.controller;
 
 import static com.c3.lsg.constants.ResponseConstant.CODE_FAILED;
-import static com.c3.lsg.constants.ResponseConstant.CODE_SUCCESS;
 import static com.c3.lsg.constants.ResponseConstant.MESSAGE_FAILED;
-import static com.c3.lsg.constants.ResponseConstant.MESSAGE_SUCCESS;
 import static com.c3.lsg.constants.ResponseConstant.TITLE_FAILED;
-import static com.c3.lsg.constants.ResponseConstant.TITLE_SUCCESS;
 
 import java.util.List;
 

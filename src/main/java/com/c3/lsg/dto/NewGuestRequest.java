@@ -24,10 +24,10 @@ public class NewGuestRequest {
 	 * @param address
 	 * @param mobileNo
 	 * @param email
-	 * @param invitedBy
+	 * @param invitedById
 	 */
 	public NewGuestRequest(String firstName, String middleName, String lastName, Integer age, String address,
-			String mobileNo, String email, String invitedBy) {
+			String mobileNo, String email, String invitedById) {
 		super();
 		this.firstName = firstName;
 		this.middleName = middleName;
@@ -36,7 +36,7 @@ public class NewGuestRequest {
 		this.address = address;
 		this.mobileNo = mobileNo;
 		this.email = email;
-		this.invitedBy = invitedBy;
+		this.invitedById = invitedById;
 	}
 
 	private String firstName;
@@ -53,7 +53,7 @@ public class NewGuestRequest {
 
 	private String email;
 
-	private String invitedBy;
+	private String invitedById;
 
 	public String getFirstName() {
 		return firstName;
@@ -111,12 +111,12 @@ public class NewGuestRequest {
 		this.email = email;
 	}
 
-	public String getInvitedBy() {
-		return invitedBy;
+	public String getInvitedById() {
+		return invitedById;
 	}
 
-	public void setInvitedBy(String invitedBy) {
-		this.invitedBy = invitedBy;
+	public void setInvitedById(String invitedById) {
+		this.invitedById = invitedById;
 	}
 
 }
