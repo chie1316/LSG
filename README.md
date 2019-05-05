@@ -21,7 +21,7 @@ Help the group to organize the event, monitor some data that are vital in improv
 	"lastName": String*,
 	"age": int*,
 	"address": String*,
-	"mobileNo": String*,
+	"mobileNo": String,
 	"email": String,
 	"invitedBy": String
 }
@@ -115,12 +115,12 @@ Content-Type: application/json
 ### REQUEST:
 ```
 {
-	"id":String,
-	"firstName":String,
-	"middleName":String,
-	"lastName":String,
-	"age":int,
-	"address":String,
+	"id":String*,
+	"firstName":String*,
+	"middleName":String*,
+	"lastName":String*,
+	"age":int*,
+	"address":String*,
 	"mobileNo":String,
 	"email":String,
 	"invitedById":String
