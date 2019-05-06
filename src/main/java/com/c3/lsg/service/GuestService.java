@@ -5,6 +5,7 @@ package com.c3.lsg.service;
 
 import java.util.List;
 
+import com.c3.lsg.dto.FilterDto;
 import com.c3.lsg.dto.GuestResponseDtl;
 import com.c3.lsg.dto.NewGuestRequest;
 import com.c3.lsg.dto.ResponseListObject;
@@ -30,7 +31,7 @@ public interface GuestService {
 	/*
 	 * This service will allow the user to view guest list.
 	 */
-	public ResponseListObject<List<GuestResponseDtl>> getGuestLists() throws CustomException;
+	public ResponseListObject<List<GuestResponseDtl>> getGuestLists(FilterDto request) throws CustomException;
 
 	/*
 	 * This service will allow the user to view guest details.

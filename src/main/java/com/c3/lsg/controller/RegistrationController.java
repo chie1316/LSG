@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.c3.lsg.dto.FilterDto;
 import com.c3.lsg.dto.GuestResponseDtl;
 import com.c3.lsg.dto.NewGuestRequest;
 import com.c3.lsg.dto.ResponseListObject;
@@ -63,20 +64,26 @@ public class RegistrationController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@GetMapping(value = "/getGuests")
-	public ResponseListObject<List<GuestResponseDtl>> getGuests() {
+	@PostMapping(value = "/getGuests")
+	public ResponseListObject<List<GuestResponseDtl>> getGuests(@RequestBody FilterDto request) {
 		log.info("getGuests");
 
 		ResponseListObject<List<GuestResponseDtl>> response = new ResponseListObject<>();
 		try {
-			response = guestService.getGuestLists();
+			response = guestService.getGuestLists(request);
 
 		} catch (CustomException e) {
 			response = CustomBuilder.buildListResponse(e.getCode(), e.getTitle(), e.getMessage(), new ArrayList<>());
 		}
 		return response;
 	}
-	
+
+	/**
+	 * View Guest details found by guestId
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@GetMapping(value = "/getGuestDetailsById")
 	public ResponseListObject<GuestResponseDtl> getGuestById(@RequestParam String id) {
 		log.info("getGuestDetailsById");
@@ -90,11 +97,17 @@ public class RegistrationController extends BaseController {
 		}
 		return response;
 	}
-	
-	@PutMapping(value = "updateGuest") 
+
+	/**
+	 * Updates Guest Details
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@PutMapping(value = "updateGuest")
 	public ResponseObject updateGuest(@RequestBody UpdateGuestRequest request) {
 		ResponseObject response = null;
-		
+
 		try {
 			inputValidator.updateGuest(request);
 			response = guestService.updateGuest(request);
@@ -102,21 +115,27 @@ public class RegistrationController extends BaseController {
 		} catch (CustomException e) {
 			response = CustomBuilder.buildResponse(e.getCode(), e.getTitle(), e.getMessage());
 		}
-		
+
 		return response;
 	}
-	
-	@DeleteMapping(value = "removeGuest") 
+
+	/**
+	 * Removes Guest
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@DeleteMapping(value = "removeGuest")
 	public ResponseObject removeGuest(@RequestParam String id) {
 		ResponseObject response = null;
-		
+
 		try {
 			response = guestService.removeGuest(id);
 
 		} catch (CustomException e) {
 			response = CustomBuilder.buildResponse(e.getCode(), e.getTitle(), e.getMessage());
 		}
-		
+
 		return response;
 	}
 }

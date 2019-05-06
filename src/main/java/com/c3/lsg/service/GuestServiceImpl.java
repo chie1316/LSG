@@ -16,8 +16,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.c3.lsg.dto.FilterDto;
 import com.c3.lsg.dto.GuestResponseDtl;
 import com.c3.lsg.dto.InvitedByResponseDtl;
 import com.c3.lsg.dto.NewGuestRequest;
@@ -28,6 +31,8 @@ import com.c3.lsg.exeception.CustomException;
 import com.c3.lsg.model.Guest;
 import com.c3.lsg.model.Member;
 import com.c3.lsg.repository.GuestRepository;
+import com.c3.lsg.util.ConverterUtil;
+import com.c3.lsg.validation.InputValidator;
 
 /**
  * @author archie.ramirez
@@ -52,7 +57,7 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 		} catch (DataAccessException e) {
 			throw new CustomException(Integer.valueOf(env.getProperty(CODE_FAILED)), //
 					env.getProperty(TITLE_DATA_ACCESS_ERROR), //
-					"Unable to add/save new Guest.");
+					"Unable to save Guest.");
 		}
 	}
 
@@ -62,16 +67,26 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 	 * @return
 	 * @throws CustomException
 	 */
-	private List<Guest> getAllGuests() throws CustomException {
-		List<Guest> guestList = new ArrayList<>();
+	private List<Guest> getAllGuests(FilterDto request) throws CustomException {
+		Page<Guest> guestPage = null;
+		Pageable pageRequest = InputValidator.pageValidator(request);
+
 		try {
-			guestList = guestRepo.findByDelFalse();
+			guestPage = guestRepo.findByDelFalse(pageRequest);
 
 		} catch (DataAccessException e) {
 			throw new CustomException(Integer.valueOf(env.getProperty(CODE_FAILED)), //
 					env.getProperty(TITLE_DATA_ACCESS_ERROR), //
 					"Unable to retrieve Guest lists.");
 		}
+
+		List<Guest> guestList = new ArrayList<>();
+		if (guestPage != null) {
+			for (Guest guestItem : guestPage.getContent()) {
+				guestList.add(guestItem);
+			}
+		}
+
 		return guestList;
 	}
 
@@ -109,7 +124,7 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 		newGuest.setMiddleName(request.getMiddleName());
 		newGuest.setLastName(request.getLastName());
 		newGuest.setAddress(request.getAddress());
-		newGuest.setAge(request.getAge());
+		newGuest.setBirthDate(ConverterUtil.stringToDate(request.getBirthDate()));
 		newGuest.setMobileNo(request.getMobileNo());
 		newGuest.setEmail(request.getEmail());
 
@@ -132,11 +147,11 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 	 * @see com.c3.lsg.registration.service.GuestService#getGuestLists()
 	 */
 	@Override
-	public ResponseListObject<List<GuestResponseDtl>> getGuestLists() throws CustomException {
+	public ResponseListObject<List<GuestResponseDtl>> getGuestLists(FilterDto request) throws CustomException {
 
 		List<GuestResponseDtl> guestResponseDtlList = new ArrayList<>();
 
-		List<Guest> guestProjectionList = getAllGuests();
+		List<Guest> guestProjectionList = getAllGuests(request);
 		for (Guest guestProjectionData : guestProjectionList) {
 
 			Member member = guestProjectionData.getInvitedBy();
@@ -148,8 +163,10 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 
 			GuestResponseDtl guestResponseDtl = new GuestResponseDtl( //
 					guestProjectionData.getId(), //
-					guestProjectionData.getFirstName(), guestProjectionData.getMiddleName(),
-					guestProjectionData.getLastName(), guestProjectionData.getAge(), //
+					guestProjectionData.getFirstName(), //
+					guestProjectionData.getMiddleName(), //
+					guestProjectionData.getLastName(), //
+					guestProjectionData.getBirthDate(), //
 					guestProjectionData.getAddress(), //
 					guestProjectionData.getMobileNo(), //
 					guestProjectionData.getEmail(), //
@@ -189,7 +206,7 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 					guest.getFirstName(), //
 					guest.getMiddleName(), //
 					guest.getLastName(), //
-					guest.getAge(), //
+					guest.getBirthDate(), //
 					guest.getAddress(), //
 					guest.getMobileNo(), //
 					guest.getEmail(), //
@@ -220,7 +237,7 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 			guest.setMiddleName(request.getMiddleName());
 			guest.setLastName(request.getLastName());
 			guest.setAddress(request.getAddress());
-			guest.setAge(request.getAge());
+			guest.setBirthDate(ConverterUtil.stringToDate(request.getBirthDate()));
 			guest.setMobileNo(request.getMobileNo());
 			guest.setEmail(request.getEmail());
 
@@ -260,7 +277,7 @@ public class GuestServiceImpl extends BaseService implements GuestService {
 			guest.setDel(true);
 
 			saveGuest(guest);
-			
+
 			response = new ResponseObject( //
 					Integer.valueOf(env.getProperty(CODE_SUCCESS)), //
 					env.getProperty(TITLE_SUCCESS), //

@@ -3,8 +3,8 @@
  */
 package com.c3.lsg.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.c3.lsg.model.Member;
@@ -26,7 +26,9 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 	/**
 	 * Selects all undeleted Member.
 	 * 
+	 * @param pageRequest
+	 * 
 	 * @return
 	 */
-	public List<Member> findByDelFalse();
+	public Page<Member> findByDelFalse(Pageable pageRequest);
 }

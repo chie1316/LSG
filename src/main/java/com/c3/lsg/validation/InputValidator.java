@@ -6,13 +6,22 @@ package com.c3.lsg.validation;
 import static com.c3.lsg.constants.ResponseConstant.CODE_FAILED;
 import static com.c3.lsg.constants.ResponseConstant.TITLE_REQUIRED;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.c3.lsg.dto.FilterDto;
 import com.c3.lsg.dto.NewGuestRequest;
 import com.c3.lsg.dto.NewMemberRequest;
+import com.c3.lsg.dto.SortDto;
 import com.c3.lsg.dto.UpdateGuestRequest;
 import com.c3.lsg.exeception.CustomException;
 
@@ -22,6 +31,8 @@ import com.c3.lsg.exeception.CustomException;
  */
 @Component
 public class InputValidator {
+
+	private static final Logger log = LoggerFactory.getLogger(InputValidator.class);
 
 	@Autowired
 	private Environment env;
@@ -34,22 +45,6 @@ public class InputValidator {
 	 */
 	private boolean isEmptyStr(Object str) {
 		return StringUtils.isEmpty(str);
-	}
-
-	/**
-	 * This method will validate an Integer if it is null or not.
-	 * 
-	 * @param num
-	 * @return
-	 */
-	private boolean isEmptyInt(Integer num) {
-
-		boolean isEmpty = false;
-		if (num == null) {
-			isEmpty = true;
-		}
-
-		return isEmpty;
 	}
 
 	/**
@@ -73,7 +68,7 @@ public class InputValidator {
 			errorMessage.append("\n");
 		}
 
-		if (isEmptyInt(request.getAge())) {
+		if (isEmptyStr(request.getBirthDate())) {
 			hasError = true;
 			errorMessage.append("Age is required.");
 			errorMessage.append("\n");
@@ -114,7 +109,7 @@ public class InputValidator {
 			errorMessage.append("\n");
 		}
 
-		if (isEmptyInt(request.getAge())) {
+		if (isEmptyStr(request.getBirthDate())) {
 			hasError = true;
 			errorMessage.append("Age is required.");
 			errorMessage.append("\n");
@@ -133,7 +128,7 @@ public class InputValidator {
 					errorMessage.toString());
 		}
 	}
-	
+
 	/**
 	 * This method will validate Incoming requests from addMember Controller.
 	 * 
@@ -162,5 +157,40 @@ public class InputValidator {
 					env.getProperty(TITLE_REQUIRED), //
 					errorMessage.toString());
 		}
+	}
+
+	public static Pageable pageValidator(FilterDto request) {
+		Pageable pageRequest = null;
+		if (request != null) {
+			
+			if (request.getPage() == null) {
+				request.setPage(0);
+			}
+
+			if (request.getLimit() == null) {
+				request.setLimit(10);
+			}
+
+			pageRequest = PageRequest.of(request.getPage(), request.getLimit());
+
+			List<SortDto> sortList = request.getSortList();
+			if (sortList != null) {
+				log.info("sort not null");
+
+				if (!sortList.isEmpty()) {
+					for (SortDto sortData : sortList) {
+
+						if (!StringUtils.isEmpty(sortData.getSortBy())
+								&& !StringUtils.isEmpty(sortData.getSortOrder())) {
+							pageRequest = PageRequest.of(request.getPage(), request.getLimit(),
+									Sort.Direction.fromString(sortData.getSortOrder()), sortData.getSortBy());
+						}
+					}
+				}
+			}
+		} else {
+			pageRequest = PageRequest.of(0, 10);
+		}
+		return pageRequest;
 	}
 }

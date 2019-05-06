@@ -27,14 +27,14 @@ public class UpdateGuestRequest {
 	 * @param email
 	 * @param invitedById
 	 */
-	public UpdateGuestRequest(String id, String firstName, String middleName, String lastName, Integer age,
+	public UpdateGuestRequest(String id, String firstName, String middleName, String lastName, String birthDate,
 			String address, String mobileNo, String email, String invitedById) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;
-		this.age = age;
+		this.birthDate = birthDate;
 		this.address = address;
 		this.mobileNo = mobileNo;
 		this.email = email;
@@ -49,7 +49,7 @@ public class UpdateGuestRequest {
 
 	private String lastName;
 
-	private Integer age;
+	private String birthDate;
 
 	private String address;
 
@@ -91,12 +91,12 @@ public class UpdateGuestRequest {
 		this.lastName = lastName;
 	}
 
-	public Integer getAge() {
-		return age;
+	public String getBirthDate() {
+		return birthDate;
 	}
 
-	public void setAge(Integer age) {
-		this.age = age;
+	public void setBirthDate(String birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public String getAddress() {

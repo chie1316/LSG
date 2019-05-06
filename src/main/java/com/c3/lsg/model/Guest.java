@@ -29,8 +29,8 @@ public class Guest extends ParentModel {
 	@Column(name = "LAST_NAME")
 	private String lastName;
 
-	@Column(name = "AGE")
-	private int age;
+	@Column(name = "BIRTH_DATE")
+	private Date birthDate;
 
 	@Column(name = "ADDRESS")
 	private String address;
@@ -71,13 +71,13 @@ public class Guest extends ParentModel {
 	 * @param invitedBy
 	 * @param event
 	 */
-	public Guest(String firstName, String middleName, String lastName, int age, String address, String mobileNo,
+	public Guest(String firstName, String middleName, String lastName, Date birthDate, String address, String mobileNo,
 			String email, Date createDate, Member invitedBy, Event event) {
 		super();
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;
-		this.age = age;
+		this.birthDate = birthDate;
 		this.address = address;
 		this.mobileNo = mobileNo;
 		this.email = email;
@@ -110,12 +110,12 @@ public class Guest extends ParentModel {
 		this.lastName = lastName;
 	}
 
-	public int getAge() {
-		return age;
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setAge(int age) {
-		this.age = age;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public String getAddress() {

@@ -3,6 +3,8 @@
  */
 package com.c3.lsg.dto;
 
+import java.util.Date;
+
 /**
  * @author archie.ramirez
  *
@@ -18,22 +20,25 @@ public class GuestResponseDtl {
 	}
 
 	/**
+	 * 
 	 * @param id
-	 * @param name
-	 * @param age
+	 * @param firstName
+	 * @param middleName
+	 * @param lastName
+	 * @param birthDate
 	 * @param address
 	 * @param mobileNo
 	 * @param email
 	 * @param invitedBy
 	 */
-	public GuestResponseDtl(String id, String firstName, String middleName, String lastName, int age, String address, String mobileNo, String email,
-			InvitedByResponseDtl invitedBy) {
+	public GuestResponseDtl(String id, String firstName, String middleName, String lastName, Date birthDate,
+			String address, String mobileNo, String email, InvitedByResponseDtl invitedBy) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;
-		this.age = age;
+		this.birthDate = birthDate;
 		this.address = address;
 		this.mobileNo = mobileNo;
 		this.email = email;
@@ -43,12 +48,12 @@ public class GuestResponseDtl {
 	private String id;
 
 	private String firstName;
-	
+
 	private String middleName;
-	
+
 	private String lastName;
 
-	private int age;
+	private Date birthDate;
 
 	private String address;
 
@@ -90,12 +95,12 @@ public class GuestResponseDtl {
 		this.lastName = lastName;
 	}
 
-	public int getAge() {
-		return age;
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setAge(int age) {
-		this.age = age;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public String getAddress() {

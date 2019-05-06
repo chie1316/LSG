@@ -3,10 +3,6 @@
  */
 package com.c3.lsg.controller;
 
-import static com.c3.lsg.constants.ResponseConstant.CODE_FAILED;
-import static com.c3.lsg.constants.ResponseConstant.MESSAGE_FAILED;
-import static com.c3.lsg.constants.ResponseConstant.TITLE_FAILED;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.c3.lsg.dto.FilterDto;
 import com.c3.lsg.dto.MemberResponseDtl;
 import com.c3.lsg.dto.NewMemberRequest;
 import com.c3.lsg.dto.ResponseListObject;
@@ -61,21 +59,30 @@ public class C3MemberController extends BaseController {
 	 * @param request
 	 * @return
 	 */
-	@GetMapping(value = "/getMembers")
-	public ResponseListObject<List<MemberResponseDtl>> getMembers() {
+	@PostMapping(value = "/getMembers")
+	public ResponseListObject<List<MemberResponseDtl>> getMembers(@RequestBody FilterDto request) {
 		log.info("getMembers");
 
 		ResponseListObject<List<MemberResponseDtl>> response = new ResponseListObject<>();
 
 		try {
-			response = memberService.getMemberList();
+			response = memberService.getMemberList(request);
 
-		} catch (Exception e) {
-			response = CustomBuilder.buildListResponse(//
-					Integer.valueOf(env.getProperty(CODE_FAILED)), //
-					env.getProperty(TITLE_FAILED), //
-					env.getProperty(MESSAGE_FAILED), //
-					null);
+		} catch (CustomException e) {
+			response = CustomBuilder.buildListResponse(e.getCode(), e.getTitle(), e.getMessage(), null);
+		}
+		return response;
+	}
+
+	@GetMapping(value = "getMemberDetailsById")
+	public ResponseListObject<MemberResponseDtl> getMemberDetails(@RequestParam String id) {
+		log.info("getMemberDetails");
+
+		ResponseListObject<MemberResponseDtl> response = null;
+		try {
+			response = memberService.getMemberById(id);
+		} catch (CustomException e) {
+			response = CustomBuilder.buildListResponse(e.getCode(), e.getTitle(), e.getMessage(), null);
 		}
 		return response;
 	}

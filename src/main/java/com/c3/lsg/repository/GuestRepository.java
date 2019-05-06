@@ -3,8 +3,8 @@
  */
 package com.c3.lsg.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.c3.lsg.model.Guest;
@@ -28,6 +28,6 @@ public interface GuestRepository extends JpaRepository<Guest, String> {
 	 * 
 	 * @return
 	 */
-	public List<Guest> findByDelFalse();
-	
+	public Page<Guest> findByDelFalse(Pageable page);
+
 }
